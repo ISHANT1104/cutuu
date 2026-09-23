@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>happiest 3 months cutuuuu</title>
+  <!-- Canvas Confetti Library for explosion effect -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Great+Vibes&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #ffeaf0 0%, #ffd1dc 60%, #fca1b7 100%);
+      font-family: 'Fredoka', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      color: #900c3f;
+    }
+
+    /* Background Particle Canvas */
+    #particleCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Neumorphic Glassmorphism Container */
+    .card-container {
+      position: relative;
+      z-index: 2;
+      width: 90%;
+      max-width: 440px;
+      height: 640px;
+      background: rgba(255, 240, 245, 0.55);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 35px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 
+        20px 20px 40px rgba(180, 50, 90, 0.25),
+        -10px -10px 25px rgba(255, 255, 255, 0.9),
+        inset 0 0 15px rgba(255, 182, 193, 0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 25px 20px;
+      text-align: center;
+    }
+
+    .step {
+      display: none;
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    .step.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      font-size: 26px;
+      color: #b30047;
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #d63384;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    /* --- STEP 1: BOW & ARROW --- */
+    .target-heart {
+      font-size: 60px;
+      animation: pulse 1.5s infinite ease-in-out;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      filter: drop-shadow(0 8px 12px rgba(255, 20, 147, 0.3));
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .bow-container {
+      width: 260px;
+      height: 220px;
+      position: relative;
+      touch-action: none;
+      cursor: grab;
+      filter: drop-shadow(0 10px 15px rgba(139, 69, 19, 0.2));
+    }
+
+    .bow-container:active {
+      cursor: grabbing;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* --- STEP 2: DOG MASCOT & LOVE SLIDER --- */
+    .dog-mascot-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin-top: 5px;
+    }
+
+    .dog-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 8px 15px rgba(214, 51, 132, 0.25));
+      animation: bounce 2s infinite ease-in-out;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .reaction-badge {
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #ff758f;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #ff0055;
+      box-shadow: 0 4px 12px rgba(255, 117, 143, 0.3);
+      min-height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .slider-container {
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.4);
+      padding: 15px;
+      border-radius: 25px;
+      box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+    }
+
+    .love-val {
+      font-size: 34px;
+      font-weight: 700;
+      color: #ff1493;
+      text-shadow: 0 2px 4px rgba(255, 182, 193, 0.8);
+      min-height: 42px;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 18px;
+      border-radius: 12px;
+      background: linear-gradient(to right, #ffccd5, #ff4d6d);
+      outline: none;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ff0055;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(255, 0, 85, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+      border: 3px solid white;
+      transition: transform 0.1s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* --- STEP 3: HEHEHEHE POPUP --- */
+    .popup-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(144, 12, 63, 0.35);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      backdrop-filter: blur(6px);
+      padding: 20px;
+    }
+
+    .popup-card {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 28px 22px;
+      border-radius: 30px;
+      border: 3px solid #ff4d6d;
+      box-shadow: 0 15px 35px rgba(255, 77, 109, 0.35);
+      text-align: center;
+      transform: scale(0.8);
+      animation: popIn 0.35s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      to { transform: scale(1); }
+    }
+
+    .popup-card h3 {
+      font-size: 30px;
+      color: #ff0055;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 15px;
+      box-shadow: 0 6px 18px rgba(255, 77, 109, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.06);
+      box-shadow: 0 8px 22px rgba(255, 77, 109, 0.5);
+    }
+
+    /* --- STEP 4: ENVELOPE & LETTER --- */
+    .envelope-wrapper {
+      position: relative;
+      width: 230px;
+      height: 155px;
+      background: linear-gradient(135deg, #ff85a1, #ff4d6d);
+      border-radius: 0 0 15px 15px;
+      margin: auto 0;
+      cursor: pointer;
+      box-shadow: 0 12px 25px rgba(255, 77, 109, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-wrapper:hover {
+      transform: translateY(-6px);
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 115px solid transparent;
+      border-right: 115px solid transparent;
+      border-top: 90px solid #ff3366;
+      transform-origin: top;
+      transition: transform 0.4s ease;
+      z-index: 3;
+    }
+
+    .envelope-wrapper.open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    .envelope-heart {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 28px;
+      z-index: 4;
+      transition: opacity 0.3s;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+    }
+
+    .envelope-wrapper.open .envelope-heart {
+      opacity: 0;
+    }
+
+    .letter-modal {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 35px;
+      padding: 30px 22px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 25;
+      border: 3px solid #ff758f;
+      box-shadow: inset 0 0 20px rgba(255, 182, 193, 0.3);
+    }
+
+    .letter-body {
+      width: 100%;
+      height: 80%;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .letter-content {
+      font-family: 'Great Vibes', cursive;
+      font-size: 26px;
+      color: #800020;
+      line-height: 1.6;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Particle Canvas -->
+  <canvas id="particleCanvas"></canvas>
+
+  <div class="card-container">
+
+    <!-- STEP 1: BOW & ARROW -->
+    <div class="step active" id="step1">
+      <div>
+        <h2>Happiest 3 Months betuuuu</h2>
+        <p class="subtitle">karoooooo</p>
+      </div>
+
+      <div class="target-heart" id="target">💖</div>
+
+      <div class="bow-container" id="bowArea">
+        <svg viewBox="0 0 200 160">
+          <path d="M 30,80 Q 100,10 170,80" fill="none" stroke="#8b4513" stroke-width="8" stroke-linecap="round"/>
+          <path id="string" d="M 30,80 Q 100,80 170,80" fill="none" stroke="#ffffff" stroke-width="3"/>
+          <g id="arrow">
+            <line x1="100" y1="20" x2="100" y2="100" stroke="#ff3366" stroke-width="4" stroke-linecap="round"/>
+            <polygon points="100,8 92,25 108,25" fill="#ff3366"/>
+            <polygon points="100,95 88,107 100,100" fill="#ff85a1"/>
+            <polygon points="100,95 112,107 100,100" fill="#ff85a1"/>
+          </g>
+        </svg>
+      </div>
+
+      <p class="subtitle" style="font-size: 13px;">Drag this arrow and release hehe</p>
+    </div>
+
+    <!-- STEP 2: DOG MASCOT & LOVE SLIDER -->
+    <div class="step" id="step2">
+      <div>
+        <h2>batao batao</h2>
+        <p class="subtitle">How much do you love me????</p>
+      </div>
+
+      <!-- BOUNCING DOG SVG MASCOT -->
+      <div class="dog-mascot-container">
+        <svg class="dog-svg" viewBox="0 0 120 120">
+          <!-- Dog Ears -->
+          <path d="M 25 35 Q 10 50 20 70 Q 30 65 30 45 Z" fill="#b06d3b"/>
+          <path d="M 95 35 Q 110 50 100 70 Q 90 65 90 45 Z" fill="#b06d3b"/>
+          <!-- Dog Head & Body -->
+          <circle cx="60" cy="88" r="24" fill="#e69d63"/>
+          <circle cx="60" cy="52" r="36" fill="#e69d63"/>
+          <ellipse cx="60" cy="62" rx="20" ry="14" fill="#fff3e0"/>
+          <!-- Dog Nose -->
+          <ellipse cx="60" cy="55" rx="6" ry="4" fill="#3e2723"/>
+          
+          <!-- DYNAMIC EYES (Controlled by JS) -->
+          <g id="dogEyes"></g>
+          
+          <!-- DYNAMIC MOUTH & CHEEKS (Controlled by JS) -->
+          <g id="dogMouth"></g>
+        </svg>
+      </div>
+
+      <!-- Dynamic Reaction Caption -->
+      <div class="reaction-badge" id="reactionBadge">Hmm... show me! 🐶</div>
+
+      <div class="slider-container">
+        <div class="love-val" id="loveVal">0%</div>
+        <input type="range" id="loveSlider" min="0" max="101" value="0">
+      </div>
+
+      <p class="subtitle">Drag the slider babyyyyy</p>
+    </div>
+
+    <!-- STEP 3 POPUP: HEHEHEHE -->
+    <div class="popup-overlay" id="popup">
+      <div class="popup-card">
+        <h3>hehehehe💓</h3>
+        <p style="color: #666; margin-bottom: 12px; font-weight: 600;">mujhe toh pehle se pata tha tidiiiii🥰🥰</p>
+        <button class="btn" onclick="goToStep4()">yeh padho ab cutuu 💌</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: ENVELOPE & HEARTFELT MESSAGE SPACE -->
+    <div class="step" id="step4">
+      <div>
+        <h2>padho ise💌</h2>
+        <p class="subtitle">click on it</p>
+      </div>
+
+      <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
+        <div class="envelope-flap"></div>
+        <div class="envelope-heart">💖</div>
+      </div>
+
+      <p class="subtitle">Happiest 3 months pyaari babyyyyy😘😘</p>
+    </div>
+
+    <!-- LETTER MODAL (WRITE YOUR CUSTOM MESSAGE HERE) -->
+    <div class="letter-modal" id="letterModal">
+      <div class="letter-body">
+        <!-- WRITE YOUR HEARTFELT MESSAGE BELOW -->
+        <div class="letter-content">
+          My jaanuuuuuu,<br><br>
+          happiest 3 months my cutuuuu<br><br>
+          youre literally the prettiest girl ever and i swear i could never get tired of looking at you. you make my days so much happier just by being you. i love youuuuuu sooooo muchhhhh and abhi toh poori life saath rehna hai😘😘😘😘😘
+        </div>
+      </div>
+      <button class="btn" onclick="closeLetter()">Close 💕</button>
+    </div>
+
+  </div>
+
+  <script>
+    /* --- AUDIO SYNTHESIZER (Web Audio API) --- */
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+    }
+
+    // Bow Twang Sound Effect
+    function playTwangSFX() {
+      initAudio();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.15);
+    }
+
+    // Target Hit Chime SFX
+    function playHitChimeSFX() {
+      initAudio();
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + index * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + index * 0.06 + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + index * 0.06);
+        osc.stop(audioCtx.currentTime + index * 0.06 + 0.3);
+      });
+    }
+
+    // Love Slider Tone Pitch Sound Effect
+    function playSliderTone(val) {
+      initAudio();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      const freq = 260 + (val * 5); // Pitch rises as slider goes right
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.08);
+    }
+
+    // Fanfare Sound on Infinity
+    function playFanfareSFX() {
+      initAudio();
+      const notes = [440, 554.37, 659.25, 880];
+      notes.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime + index * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + index * 0.1 + 0.4);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + index * 0.1);
+        osc.stop(audioCtx.currentTime + index * 0.1 + 0.4);
+      });
+    }
+
+    /* --- BACKGROUND FLOATING PARTICLES CANVAS --- */
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + 20;
+        this.size = Math.random() * 14 + 10;
+        this.speedY = Math.random() * 1.5 + 0.6;
+        this.speedX = (Math.random() - 0.5) * 0.8;
+        this.opacity = Math.random() * 0.6 + 0.2;
+        this.type = Math.random() > 0.4 ? '💖' : (Math.random() > 0.5 ? '✨' : '🌸');
+      }
+      update() {
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        if (this.y < -30) this.reset();
+      }
+      draw() {
+        ctx.globalAlpha = this.opacity;
+        ctx.font = `${this.size}px sans-serif`;
+        ctx.fillText(this.type, this.x, this.y);
+      }
+    }
+
+    for (let i = 0; i < 28; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    /* --- STEP 1: BOW & ARROW LOGIC --- */
+    const bowArea = document.getElementById('bowArea');
+    const arrow = document.getElementById('arrow');
+    const string = document.getElementById('string');
+    const target = document.getElementById('target');
+    
+    let isDragging = false;
+    let startY = 0;
+    let pullDistance = 0;
+    const maxPull = 60;
+
+    const startPull = (e) => {
+      isDragging = true;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+    };
+
+    const movePull = (e) => {
+      if (!isDragging) return;
+      const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+      pullDistance = Math.min(Math.max(0, currentY - startY), maxPull);
+      
+      arrow.style.transform = `translateY(${pullDistance}px)`;
+      string.setAttribute('d', `M 30,80 Q 100,${80 + pullDistance} 170,80`);
+    };
+
+    const endPull = () => {
+      if (!isDragging) return;
+      isDragging = false;
+
+      if (pullDistance > 25) {
+        playTwangSFX();
+        arrow.style.transition = 'transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)';
+        arrow.style.transform = 'translateY(-270px)';
+        string.setAttribute('d', `M 30,80 Q 100,80 170,80`);
+
+        setTimeout(() => {
+          playHitChimeSFX();
+          target.style.transform = 'scale(1.6) rotate(15deg)';
+          target.innerText = '💘';
+          confetti({ particleCount: 40, spread: 60, origin: { y: 0.3 } });
+        }, 150);
+
+        setTimeout(() => {
+          document.getElementById('step1').classList.remove('active');
+          document.getElementById('step2').classList.add('active');
+          updateDogMascot(0);
+        }, 1100);
+      } else {
+        arrow.style.transition = 'transform 0.2s';
+        arrow.style.transform = 'translateY(0px)';
+        string.setAttribute('d', `M 30,80 Q 100,80 170,80`);
+      }
+      pullDistance = 0;
+    };
+
+    bowArea.addEventListener('mousedown', startPull);
+    window.addEventListener('mousemove', movePull);
+    window.addEventListener('mouseup', endPull);
+
+    bowArea.addEventListener('touchstart', startPull);
+    window.addEventListener('touchmove', movePull);
+    window.addEventListener('touchend', endPull);
+
+    /* --- STEP 2: DOG EXPRESSIONS & SLIDER LOGIC --- */
+    const dogEyes = document.getElementById('dogEyes');
+    const dogMouth = document.getElementById('dogMouth');
+    const reactionBadge = document.getElementById('reactionBadge');
+    const slider = document.getElementById('loveSlider');
+    const loveVal = document.getElementById('loveVal');
+    const popup = document.getElementById('popup');
+
+    function updateDogMascot(val) {
+      if (val < 20) {
+        // Stage 1: Sleepy / Shy Dog
+        dogEyes.innerHTML = `
+          <path d="M 42 48 Q 48 54 54 48" stroke="#3e2723" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M 66 48 Q 72 54 78 48" stroke="#3e2723" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        `;
+        dogMouth.innerHTML = `<path d="M 55 64 Q 60 67 65 64" stroke="#3e2723" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+        reactionBadge.innerText = "bas itna hi?😭😭";
+      } else if (val < 50) {
+        // Stage 2: Curious Dog
+        dogEyes.innerHTML = `
+          <circle cx="48" cy="46" r="4" fill="#3e2723"/>
+          <circle cx="72" cy="46" r="4" fill="#3e2723"/>
+        `;
+        dogMouth.innerHTML = `
+          <path d="M 54 62 Q 60 68 66 62" stroke="#3e2723" stroke-width="3" fill="none"/>
+          <circle cx="42" cy="56" r="4" fill="#ffb6c1" opacity="0.6"/>
+          <circle cx="78" cy="56" r="4" fill="#ffb6c1" opacity="0.6"/>
+        `;
+        reactionBadge.innerText = "haww okay☹️☹️";
+      } else if (val < 80) {
+        // Stage 3: Happy Dog
+        dogEyes.innerHTML = `
+          <path d="M 42 48 Q 48 40 54 48" stroke="#3e2723" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M 66 48 Q 72 40 78 48" stroke="#3e2723" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        `;
+        dogMouth.innerHTML = `
+          <path d="M 52 62 Q 60 72 68 62" stroke="#3e2723" stroke-width="3" fill="#ff758f"/>
+          <circle cx="40" cy="56" r="5" fill="#ff85a1"/>
+          <circle cx="80" cy="56" r="5" fill="#ff85a1"/>
+        `;
+        reactionBadge.innerText = "aurrrrrr 🥰🥰🥰🥰";
+      } else if (val < 100) {
+        // Stage 4: Excited Dog
+        dogEyes.innerHTML = `
+          <circle cx="48" cy="45" r="6" fill="#3e2723"/>
+          <circle cx="50" cy="43" r="2" fill="#fff"/>
+          <circle cx="72" cy="45" r="6" fill="#3e2723"/>
+          <circle cx="74" cy="43" r="2" fill="#fff"/>
+        `;
+        dogMouth.innerHTML = `
+          <path d="M 50 60 Q 60 74 70 60 Z" fill="#ff3366"/>
+          <circle cx="38" cy="56" r="6" fill="#ff4d6d" opacity="0.8"/>
+          <circle cx="82" cy="56" r="6" fill="#ff4d6d" opacity="0.8"/>
+        `;
+        reactionBadge.innerText = "mwah mwah😘😘😘😘";
+      } else {
+        // Stage 5: Overjoyed Heart-Eyes Dog (Infinity!)
+        dogEyes.innerHTML = `
+          <text x="40" y="52" font-size="16">💖</text>
+          <text x="64" y="52" font-size="16">💖</text>
+        `;
+        dogMouth.innerHTML = `
+          <path d="M 48 60 Q 60 78 72 60 Z" fill="#ff0055"/>
+          <ellipse cx="60" cy="70" rx="4" ry="6" fill="#ff85a1"/>
+        `;
+        reactionBadge.innerText = "yayyyyyyyyy meri babyyyyy😘😘";
+      }
+    }
+
+    let lastToneTime = 0;
+    slider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      
+      // Play audio synth tone
+      if (Date.now() - lastToneTime > 60) {
+        playSliderTone(val);
+        lastToneTime = Date.now();
+      }
+
+      updateDogMascot(val);
+
+      if (val < 100) {
+        loveVal.innerText = val + '%';
+      } else {
+        loveVal.innerText = '∞ (Infinity)';
+        playFanfareSFX();
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        
+        setTimeout(() => {
+          popup.style.display = 'flex';
+        }, 400);
+      }
+    });
+
+    /* --- STEP 3 & 4: POPUP & ENVELOPE LOGIC --- */
+    function goToStep4() {
+      popup.style.display = 'none';
+      document.getElementById('step2').classList.remove('active');
+      document.getElementById('step4').classList.add('active');
+    }
+
+    function openEnvelope() {
+      const envelope = document.getElementById('envelope');
+      envelope.classList.add('open');
+      playHitChimeSFX();
+      confetti({ particleCount: 60, spread: 80, origin: { y: 0.5 } });
+      
+      setTimeout(() => {
+        document.getElementById('letterModal').style.display = 'flex';
+      }, 500);
+    }
+
+    function closeLetter() {
+      document.getElementById('letterModal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
